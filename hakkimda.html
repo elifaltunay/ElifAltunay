@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hakkımda | Elif Altunay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #0a1628;
+      --deep: #0d2144;
+      --mid: #1a3a6b;
+      --bright: #2563b0;
+      --sky: #4a9fd5;
+      --ice: #a8d4f0;
+      --frost: #dceefa;
+      --white: #f4f9ff;
+      --gold: #c9a96e;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 10% 20%, rgba(37,99,176,0.3) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 70% at 90% 80%, rgba(74,159,213,0.18) 0%, transparent 55%);
+      z-index: 0;
+      animation: bgPulse 12s ease-in-out infinite alternate;
+    }
+    @keyframes bgPulse { 0%{opacity:1} 100%{opacity:0.7} }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 4rem;
+      backdrop-filter: blur(18px);
+      background: rgba(10,22,40,0.8);
+      border-bottom: 1px solid rgba(74,159,213,0.18);
+    }
+    .nav-logo { font-family:'Cormorant Garamond',serif; font-size:1.45rem; font-weight:300; letter-spacing:0.12em; color:var(--ice); text-decoration:none; }
+    .nav-logo span { color:var(--gold); font-style:italic; }
+    .nav-links { display:flex; gap:2.5rem; list-style:none; }
+    .nav-links a { text-decoration:none; color:rgba(168,212,240,0.75); font-size:0.82rem; letter-spacing:0.14em; text-transform:uppercase; transition:color 0.3s; font-weight:500; }
+    .nav-links a:hover, .nav-links a.active { color:var(--sky); }
+
+    /* page header */
+    .page-header {
+      position: relative; z-index: 1;
+      padding: 10rem 4rem 4rem;
+      max-width: 1000px; margin: 0 auto;
+    }
+    .page-tag { font-size:0.72rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--sky); margin-bottom:0.8rem; animation: fadeUp 0.8s ease both; }
+    .page-title {
+      font-family:'Cormorant Garamond',serif; font-size:clamp(2.5rem,5vw,4.5rem);
+      font-weight:300; color:var(--white); animation: fadeUp 0.8s ease 0.2s both;
+    }
+    .page-title em { font-style:italic; color:var(--gold); }
+    .page-divider { width:80px; height:1px; background:linear-gradient(90deg,var(--gold),transparent); margin:2rem 0; animation: fadeUp 0.8s ease 0.4s both; }
+
+    /* profile section */
+    .profile-wrap {
+      position: relative; z-index: 1;
+      max-width: 1000px; margin: 0 auto;
+      padding: 0 4rem 4rem;
+      display: grid; grid-template-columns: 280px 1fr;
+      gap: 4rem; align-items: start;
+    }
+
+    /* avatar card */
+    .avatar-card {
+      background: rgba(26,58,107,0.25);
+      border: 1px solid rgba(74,159,213,0.2);
+      border-radius: 4px;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      animation: fadeUp 0.8s ease 0.3s both;
+      position: sticky; top: 6rem;
+    }
+    .avatar-ring {
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--bright), var(--sky));
+      margin: 0 auto 1.5rem;
+      display: flex; align-items: center; justify-content: center;
+      font-family:'Cormorant Garamond',serif; font-size:2.8rem; color:var(--white);
+      font-weight:300;
+      animation: ringPulse 4s ease-in-out infinite;
+      position: relative;
+    }
+    .avatar-ring::after {
+      content:'';
+      position:absolute; inset:-6px;
+      border-radius:50%;
+      border:1px solid rgba(74,159,213,0.4);
+      animation: ringExpand 4s ease-in-out infinite;
+    }
+    @keyframes ringPulse { 0%,100%{box-shadow:0 0 20px rgba(74,159,213,0.3)} 50%{box-shadow:0 0 40px rgba(74,159,213,0.6)} }
+    @keyframes ringExpand { 0%,100%{transform:scale(1);opacity:0.4} 50%{transform:scale(1.08);opacity:0.8} }
+
+    .avatar-name { font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:300; color:var(--white); margin-bottom:0.3rem; }
+    .avatar-role { font-size:0.78rem; color:var(--sky); letter-spacing:0.12em; text-transform:uppercase; margin-bottom:1.5rem; }
+    .avatar-links { display:flex; flex-direction:column; gap:0.6rem; }
+    .avatar-link {
+      display:flex; align-items:center; gap:0.7rem;
+      padding:0.5rem 0.8rem;
+      background:rgba(37,99,176,0.15);
+      border:1px solid rgba(74,159,213,0.15);
+      border-radius:3px;
+      font-size:0.78rem; color:var(--ice);
+      text-decoration:none;
+      transition:background 0.3s, border-color 0.3s;
+    }
+    .avatar-link:hover { background:rgba(37,99,176,0.3); border-color:var(--sky); }
+    .avatar-link .icon { font-size:0.9rem; }
+
+    /* content */
+    .content { animation: fadeUp 0.8s ease 0.5s both; }
+    .content-block { margin-bottom:3rem; }
+    .block-label { font-size:0.7rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--sky); margin-bottom:0.8rem; }
+    .block-title { font-family:'Cormorant Garamond',serif; font-size:1.7rem; font-weight:300; color:var(--white); margin-bottom:1rem; }
+    .block-text { color:rgba(168,212,240,0.8); font-size:0.97rem; line-height:1.9; font-weight:300; }
+    .block-text + .block-text { margin-top:0.8rem; }
+
+    /* skills */
+    .skills-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-top:1rem; }
+    .skill-chip {
+      display:flex; align-items:center; gap:0.6rem;
+      padding:0.7rem 1rem;
+      background:rgba(37,99,176,0.12);
+      border:1px solid rgba(74,159,213,0.18);
+      border-radius:3px;
+      font-size:0.83rem; color:var(--ice);
+      transition:all 0.3s;
+    }
+    .skill-chip:hover { background:rgba(37,99,176,0.25); border-color:var(--sky); transform:translateX(4px); }
+    .skill-chip .dot { width:6px; height:6px; background:var(--sky); border-radius:50%; flex-shrink:0; }
+
+    /* experience timeline */
+    .timeline { margin-top:1rem; display:flex; flex-direction:column; gap:0; }
+    .timeline-item {
+      display:grid; grid-template-columns:120px 1fr;
+      gap:1.5rem; padding:1.5rem 0;
+      border-bottom:1px solid rgba(74,159,213,0.1);
+      animation: fadeUp 0.6s ease both;
+    }
+    .timeline-item:last-child { border-bottom:none; }
+    .t-year { font-size:0.78rem; color:var(--sky); letter-spacing:0.1em; padding-top:0.2rem; }
+    .t-role { font-family:'Cormorant Garamond',serif; font-size:1.15rem; color:var(--white); margin-bottom:0.2rem; }
+    .t-org { font-size:0.82rem; color:rgba(168,212,240,0.6); margin-bottom:0.5rem; }
+    .t-desc { font-size:0.88rem; color:rgba(168,212,240,0.7); line-height:1.7; font-weight:300; }
+
+    footer {
+      position:relative; z-index:1;
+      border-top:1px solid rgba(74,159,213,0.15);
+      padding:2rem 4rem;
+      display:flex; justify-content:space-between; align-items:center;
+      color:rgba(168,212,240,0.4); font-size:0.78rem;
+    }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+    @media(max-width:768px){
+      nav{padding:1rem 1.5rem}
+      .nav-links{gap:1rem}
+      .page-header,.profile-wrap{padding-left:1.5rem;padding-right:1.5rem}
+      .profile-wrap{grid-template-columns:1fr}
+      .avatar-card{position:static}
+      .skills-grid{grid-template-columns:1fr}
+      footer{flex-direction:column;gap:0.5rem;text-align:center;padding:1.5rem}
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="nav-logo" href="index.html">Elif <span>Altunay</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Ana Sayfa</a></li>
+      <li><a href="hakkimda.html" class="active">Hakkımda</a></li>
+      <li><a href="hobilerim.html">Hobilerim</a></li>
+      <li><a href="iletisim.html">İletişim</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-header">
+    <p class="page-tag">02 — Hakkımda</p>
+    <h1 class="page-title">Elif <em>Altunay</em></h1>
+    <div class="page-divider"></div>
+  </div>
+
+  <div class="profile-wrap">
+
+    <!-- Sidebar card -->
+    <div class="avatar-card">
+      <div class="avatar-ring">EA</div>
+      <div class="avatar-name">Elif Altunay</div>
+      <div class="avatar-role">Bilgisayar Mühendisi</div>
+      <div class="avatar-links">
+        <a class="avatar-link" href="mailto:elif.altunay@csb.gov.tr">
+          <span class="icon">✉</span> elif.altunay@csb.gov.tr
+        </a>
+        <a class="avatar-link" href="tel:+903124101000">
+          <span class="icon">📞</span> 0312 410 10 00
+        </a>
+        <a class="avatar-link" href="#">
+          <span class="icon">📍</span> Çankaya, Ankara
+        </a>
+        <a class="avatar-link" href="iletisim.html">
+          <span class="icon">🗺</span> Haritada Gör
+        </a>
+      </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="content">
+
+      <div class="content-block">
+        <div class="block-label">Biyografi</div>
+        <div class="block-title">Ben Kimim?</div>
+        <p class="block-text">
+          Merhaba! Ben Elif Altunay — yazılım geliştirme, sistem analizi ve bilişim
+          altyapıları üzerine uzmanlaşmış bir Bilgisayar Mühendisiyim. Algoritma tasarımı,
+          veri yapıları ve uygulama geliştirme konularındaki güçlü teorik altyapımı
+          kurumsal projelerde hayata geçiriyorum.
+        </p>
+        <p class="block-text">
+          Çevre, Şehircilik ve İklim Değişikliği Bakanlığı'nda görev yaparak kamu
+          sektörünün dijital dönüşümüne katkı sağlıyorum. Web teknolojileri, veritabanı
+          yönetimi, API entegrasyonları ve yazılım mimarisi konularında aktif olarak
+          çalışmalar yürütüyorum.
+        </p>
+        <p class="block-text">
+          Bilişim dünyasındaki hızlı değişimi yakından takip ediyor; yeni teknolojiler,
+          açık kaynak projeler ve siber güvenlik alanlarına ilgi duyuyorum. Ankara
+          Keçiören'de yaşıyor, boş zamanlarımda tenis, sinema ve tiyatroyla vakit
+          geçiriyorum.
+        </p>
+      </div>
+
+      <div class="content-block">
+        <div class="block-label">Teknik Beceriler</div>
+        <div class="block-title">Uzmanlık Alanları</div>
+        <div class="skills-grid">
+          <div class="skill-chip"><div class="dot"></div>Yazılım Geliştirme</div>
+          <div class="skill-chip"><div class="dot"></div>Veri Yönetimi</div>
+          <div class="skill-chip"><div class="dot"></div>Web Teknolojileri</div>
+          <div class="skill-chip"><div class="dot"></div>Veritabanı Sistemleri</div>
+          <div class="skill-chip"><div class="dot"></div>Coğrafi Bilgi Sistemleri</div>
+          <div class="skill-chip"><div class="dot"></div>Proje Yönetimi</div>
+          <div class="skill-chip"><div class="dot"></div>API Entegrasyonu</div>
+          <div class="skill-chip"><div class="dot"></div>Sistem Analizi</div>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-label">Deneyim</div>
+        <div class="block-title">Kariyer</div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="t-year">2020 — Günümüz</div>
+            <div>
+              <div class="t-role">Bilgisayar Mühendisi</div>
+              <div class="t-org">Çevre, Şehircilik ve İklim Değişikliği Bakanlığı</div>
+              <div class="t-desc">Bakanlık bünyesinde yazılım geliştirme, dijital dönüşüm ve çevre veri yönetimi projelerinde görev almaktadır.</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="t-year">Eğitim</div>
+            <div>
+              <div class="t-role">Bilgisayar Mühendisliği</div>
+              <div class="t-org">Lisans Programı</div>
+              <div class="t-desc">Bilgisayar bilimi, algoritmalar, yazılım mühendisliği ve veri yapıları alanlarında lisans eğitimi.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    

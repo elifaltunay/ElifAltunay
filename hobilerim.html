@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hobilerim | Elif Altunay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    :root{--navy:#0a1628;--deep:#0d2144;--mid:#1a3a6b;--bright:#2563b0;--sky:#4a9fd5;--ice:#a8d4f0;--frost:#dceefa;--white:#f4f9ff;--gold:#c9a96e}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--navy);color:var(--white);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+
+    /* animated bg */
+    body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 50% at 30% 20%,rgba(37,99,176,.28) 0%,transparent 60%),radial-gradient(ellipse 50% 60% at 75% 85%,rgba(74,159,213,.15) 0%,transparent 55%);z-index:0;animation:bgPulse 14s ease-in-out infinite alternate}
+    @keyframes bgPulse{0%{opacity:1;transform:scale(1)}100%{opacity:.75;transform:scale(1.04)}}
+
+    /* particles */
+    .particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+    .particle{position:absolute;border-radius:50%;animation:floatUp linear infinite;opacity:0}
+    @keyframes floatUp{0%{transform:translateY(100vh);opacity:0}10%{opacity:.5}90%{opacity:.2}100%{transform:translateY(-10vh) translateX(40px);opacity:0}}
+
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:1.2rem 4rem;backdrop-filter:blur(18px);background:rgba(10,22,40,.8);border-bottom:1px solid rgba(74,159,213,.18)}
+    .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:300;letter-spacing:.12em;color:var(--ice);text-decoration:none}
+    .nav-logo span{color:var(--gold);font-style:italic}
+    .nav-links{display:flex;gap:2.5rem;list-style:none}
+    .nav-links a{text-decoration:none;color:rgba(168,212,240,.75);font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;transition:color .3s;font-weight:500}
+    .nav-links a:hover,.nav-links a.active{color:var(--sky)}
+
+    .page-header{position:relative;z-index:1;padding:10rem 4rem 3rem;max-width:1000px;margin:0 auto}
+    .page-tag{font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:var(--sky);margin-bottom:.8rem;animation:fadeUp .8s ease both}
+    .page-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.5rem,5vw,4.5rem);font-weight:300;color:var(--white);animation:fadeUp .8s ease .2s both}
+    .page-title em{font-style:italic;color:var(--gold)}
+    .page-divider{width:80px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);margin:2rem 0;animation:fadeUp .8s ease .3s both}
+    .page-intro{color:rgba(168,212,240,.75);font-size:.97rem;line-height:1.8;max-width:560px;animation:fadeUp .8s ease .4s both;font-weight:300}
+
+    /* ── hobby cards ── */
+    .hobbies-grid{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:3rem 4rem 2rem;display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
+
+    .hobby-card{
+      background:rgba(13,33,68,.6);border:1px solid rgba(74,159,213,.15);border-radius:4px;
+      padding:2.5rem;position:relative;overflow:hidden;cursor:default;
+      transition:border-color .4s,transform .4s,box-shadow .4s;
+      opacity:0;transform:translateY(30px);
+    }
+    .hobby-card.visible{opacity:1;transform:translateY(0);transition:opacity .6s ease,transform .6s ease,border-color .4s,box-shadow .4s}
+
+    /* shimmer */
+    .hobby-card::before{content:'';position:absolute;top:-50%;left:-80%;width:60%;height:200%;background:linear-gradient(90deg,transparent,rgba(74,159,213,.1),transparent);transform:skewX(-20deg);transition:left .7s ease}
+    .hobby-card:hover::before{left:130%}
+    .hobby-card:hover{border-color:rgba(74,159,213,.55);transform:translateY(-8px)!important;box-shadow:0 24px 60px rgba(0,0,0,.4),0 0 30px rgba(74,159,213,.12)}
+    /* bottom line */
+    .hobby-card::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;background:linear-gradient(90deg,var(--bright),var(--sky));transition:width .5s ease}
+    .hobby-card:hover::after{width:100%}
+
+    /* animated icon */
+    .hobby-icon{font-size:2.8rem;margin-bottom:1.2rem;display:block;animation:iconFloat 3.5s ease-in-out infinite}
+    .hobby-card:nth-child(1) .hobby-icon{animation-delay:0s}
+    .hobby-card:nth-child(2) .hobby-icon{animation-delay:.7s}
+    .hobby-card:nth-child(3) .hobby-icon{animation-delay:1.4s}
+    .hobby-card:nth-child(4) .hobby-icon{animation-delay:2.1s}
+    .hobby-card:nth-child(5) .hobby-icon{animation-delay:2.8s}
+    @keyframes iconFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-8px) rotate(2deg)}}
+
+    .hobby-name{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;color:var(--white);margin-bottom:.5rem}
+    .hobby-tag{display:inline-block;font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--sky);background:rgba(74,159,213,.1);border:1px solid rgba(74,159,213,.25);border-radius:2px;padding:.2rem .7rem;margin-bottom:1rem}
+    .hobby-desc{color:rgba(168,212,240,.7);font-size:.88rem;line-height:1.75;font-weight:300}
+    .hobby-card.featured{grid-column:1/-1;display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:center}
+    .hobby-card.featured .hobby-icon{font-size:4rem;margin-bottom:0}
+
+    /* pulsing corner dot */
+    .pulse-dot{position:absolute;top:1.2rem;right:1.2rem;width:8px;height:8px;background:var(--sky);border-radius:50%;animation:pulseDot 2.5s ease-in-out infinite}
+    @keyframes pulseDot{0%,100%{opacity:.3;transform:scale(1);box-shadow:0 0 0 0 rgba(74,159,213,.5)}50%{opacity:1;transform:scale(1.3);box-shadow:0 0 0 7px rgba(74,159,213,0)}}
+
+    /* ── map sections ── */
+    .map-section{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:1rem 4rem 5rem}
+    .map-block{margin-bottom:4rem}
+    .map-block-tag{font-size:.7rem;letter-spacing:.25em;text-transform:uppercase;color:var(--sky);margin-bottom:.5rem}
+    .map-block-title{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--white);margin-bottom:.5rem}
+    .map-block-title em{font-style:italic;color:var(--gold)}
+    .map-block-desc{font-size:.88rem;color:rgba(168,212,240,.6);margin-bottom:1.2rem;line-height:1.7}
+    .map-container{border-radius:4px;border:1px solid rgba(74,159,213,.25);overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:mapGlow 4s ease-in-out infinite alternate}
+    @keyframes mapGlow{0%{box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 0 rgba(74,159,213,0)}100%{box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 24px rgba(74,159,213,.18)}}
+    #travel-map{width:100%;height:420px}
+    #network-map{width:100%;height:420px}
+    .filter-bar{display:flex;gap:.8rem;margin-bottom:1rem;flex-wrap:wrap}
+    .filter-btn{padding:.45rem 1.2rem;border-radius:3px;border:1px solid rgba(74,159,213,.25);background:rgba(13,33,68,.6);color:rgba(168,212,240,.7);font-family:'DM Sans',sans-serif;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .3s}
+    .filter-btn:hover,.filter-btn.active{background:var(--bright);border-color:var(--bright);color:var(--white)}
+    .map-note{margin-top:.8rem;font-size:.75rem;color:rgba(168,212,240,.4)}
+
+    /* leaflet popup */
+    .leaflet-popup-content-wrapper{background:rgba(10,22,40,.97)!important;border:1px solid rgba(74,159,213,.4)!important;border-radius:4px!important;color:var(--white)!important;box-shadow:0 10px 30px rgba(0,0,0,.6)!important}
+    .leaflet-popup-tip{background:rgba(10,22,40,.97)!important}
+    .leaflet-popup-content{font-family:'DM Sans',sans-serif!important;font-size:.85rem!important;line-height:1.6;margin:8px 10px!important}
+    .leaflet-popup-content-wrapper{min-width:240px!important}.leaflet-popup-content img{border-radius:4px;display:block}
+    .leaflet-popup-close-button{color:var(--sky)!important}
+    .popup-title{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--ice);margin-bottom:3px}
+    .popup-tag{display:inline-block;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--sky);background:rgba(74,159,213,.12);border:1px solid rgba(74,159,213,.3);border-radius:2px;padding:.15rem .5rem;margin-bottom:5px}
+    .popup-desc{color:rgba(168,212,240,.75);font-size:.8rem}
+
+    footer{position:relative;z-index:1;border-top:1px solid rgba(74,159,213,.15);padding:2rem 4rem;display:flex;justify-content:space-between;align-items:center;color:rgba(168,212,240,.4);font-size:.78rem}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+    @media(max-width:768px){nav{padding:1rem 1.5rem}.nav-links{gap:1rem}.page-header,.hobbies-grid,.map-section{padding-left:1.5rem;padding-right:1.5rem}.hobbies-grid{grid-template-columns:1fr}.hobby-card.featured{grid-column:auto;grid-template-columns:1fr;text-align:center}footer{flex-direction:column;gap:.5rem;text-align:center;padding:1.5rem}}
+  </style>
+</head>
+<body>
+
+<div class="particles" id="particles"></div>
+
+<nav>
+  <a class="nav-logo" href="index.html">Elif <span>Altunay</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Ana Sayfa</a></li>
+    <li><a href="hakkimda.html">Hakkımda</a></li>
+    <li><a href="hobilerim.html" class="active">Hobilerim</a></li>
+    <li><a href="iletisim.html">İletişim</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <p class="page-tag">03 — Hobilerim</p>
+  <h1 class="page-title">İlgi <em>Alanlarım</em></h1>
+  <div class="page-divider"></div>
+  <p class="page-intro">Mesleğimin dışında hayatı renkli kılan aktiviteler: spor, sanat, seyahat ve zihin oyunları. Her hobi bir denge, her şehir yeni bir hikâye.</p>
+</div>
+
+<div class="hobbies-grid">
+  <div class="hobby-card"><div class="pulse-dot"></div><span class="hobby-icon">🎾</span><div class="hobby-name">Tenis</div><span class="hobby-tag">Spor</span><p class="hobby-desc">Tenis, hem fiziksel hem zihinsel koordinasyonu gerektiren harika bir spor. Kortlarda geçirilen her an strateji ve hızın mükemmel buluşması.</p></div>
+  <div class="hobby-card"><div class="pulse-dot"></div><span class="hobby-icon">🏸</span><div class="hobby-name">Badminton</div><span class="hobby-tag">Spor</span><p class="hobby-desc">Badminton hız, refleks ve çeviklik isteyen dinamik bir raket sporu. Arkadaşlarla oynanan neşeli maçlar en sevdiğim anlar arasında.</p></div>
+  <div class="hobby-card"><div class="pulse-dot"></div><span class="hobby-icon">🧩</span><div class="hobby-name">Puzzle</div><span class="hobby-tag">Zihin Oyunları</span><p class="hobby-desc">Puzzle çözmek; sabır, dikkat ve mekânsal düşünceyi bir araya getiriyor. Her parçanın yerine oturması ayrı bir tatmin kaynağı.</p></div>
+  <div class="hobby-card"><div class="pulse-dot"></div><span class="hobby-icon">🎭</span><div class="hobby-name">Tiyatro</div><span class="hobby-tag">Sanat</span><p class="hobby-desc">Sahnedeki canlı performansın büyüsüne hayranım. Oyunların yarattığı atmosfer ve hikâye anlatımının gücü beni her seferinde etkiliyor.</p></div>
+  <div class="hobby-card featured"><div class="pulse-dot"></div><span class="hobby-icon">🎬</span><div><div class="hobby-name">Sinema</div><span class="hobby-tag">Sanat &amp; Kültür</span><p class="hobby-desc">Sinema, farklı dünyalara kapı açan sonsuz bir evren. Sanat filmlerinden dramaya, komedi ve belgesellere kadar geniş bir yelpazeyi takip ediyorum. İyi bir film sonrası düşünmek ve tartışmak en keyifli anlara dönüşüyor.</p></div></div>
+</div>
+
+<div class="map-section">
+
+  <div class="map-block">
+    <div class="map-block-tag">🗺 Seyahat Haritası</div>
+    <div class="map-block-title">Ziyaret Ettiğim <em>Şehirler</em></div>
+    <div class="map-block-desc">Türkiye'nin dört bir yanında iz bıraktığım şehirler. Her nokta bir anı, her şehir bir hikâye.</div>
+    <div class="map-container"><div id="travel-map"></div></div>
+    <p class="map-note">📌 Leaflet &amp; OpenStreetMap katkıcıları</p>
+  </div>
+
+  <div class="map-block">
+    <div class="map-block-tag">📍 Kişisel Ağ Haritası</div>
+    <div class="map-block-title">Yaşam <em>Coğrafyam</em></div>
+    <div class="map-block-desc">Ev, iş ve eğitim hayatımın Ankara'daki coğrafi izi. Filtreler ile katmanları yönetin, haritaya tıklayarak koordinat okuyun.</div>
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterLayer('all',this)">Tümü</button>
+      <button class="filter-btn" onclick="filterLayer('ev',this)">🏠 Ev</button>
+      <button class="filter-btn" onclick="filterLayer('is',this)">💼 İş</button>
+      <button class="filter-btn" onclick="filterLayer('egitim',this)">🎓 Eğitim</button>
+    </div>
+    <div class="map-container"><div id="network-map"></div></div>
+    <p class="map-note" id="coord-display">📌 Haritaya tıklayın → koordinat okuyun · Leaflet &amp; OpenStreetMap</p>
+  </div>
+
+</div>
+
+<footer>
+  <span>© 2026 Elif Altunay</span>
+  <span>Çankaya · Ankara · Türkiye</span>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+/* ── particles ── */
+const pc=document.getElementById('particles');
+for(let i=0;i<28;i++){
+  const p=document.createElement('div');p.className='particle';
+  const s=Math.random()*3+1;
+  p.style.cssText=`left:${Math.random()*100}vw;width:${s}px;height:${s}px;animation-duration:${Math.random()*18+12}s;animation-delay:${Math.random()*18}s;background:${Math.random()>.6?'rgba(201,169,110,.5)':'rgba(74,159,213,.5)'}`;
+  pc.appendChild(p);
+}
+
+/* ── scroll reveal for hobby cards ── */
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){
+      setTimeout(()=>e.target.classList.add('visible'),i*80);
+    }
+  });
+},{threshold:.1});
+document.querySelectorAll('.hobby-card').forEach(el=>obs.observe(el));
+
+/* ── TRAVEL MAP ── */
+const travelMap=L.map('travel-map',{center:[39.2,34.8],zoom:5,scrollWheelZoom:false});
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© <a href="https://www.openstreetmap.org/copyright" style="color:#4a9fd5">OpenStreetMap</a>',maxZoom:18}).addTo(travelMap);
+
+const cities=[
+  {name:'Ankara',    coords:[39.9334,32.8597],emoji:'🏠',desc:'Yaşadığım ve çalıştığım şehir',color:'#c9a96e',
+   img:'https://images.unsplash.com/photo-1589561253898-768105ca91a8?w=120&h=120&fit=crop&crop=center'},
+  {name:'İstanbul',  coords:[41.0082,28.9784],emoji:'🌉',desc:'İki kıtanın buluştuğu eşsiz metropol',color:'#4a9fd5',
+   img:'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=120&h=120&fit=crop&crop=center'},
+  {name:'Antalya',   coords:[36.8969,30.7133],emoji:'🌊',desc:'Masmavi deniz ve antik güzelliklerin başkenti',color:'#4a9fd5',
+   img:'https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=120&h=120&fit=crop&crop=center'},
+  {name:'Muğla',     coords:[37.2153,28.3636],emoji:'⛵',desc:"Ege'nin incisi, eşsiz koylar ve doğa harikası",color:'#4a9fd5',
+   img:'https://images.unsplash.com/photo-1601581875039-e899893d520c?w=120&h=120&fit=crop&crop=center'},
+  {name:'Ordu',      coords:[40.9860,37.8797],emoji:'🌿',desc:"Karadeniz'in yeşil cenneti, fındık bahçeleri",color:'#4a9fd5',
+   img:'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=120&h=120&fit=crop&crop=center'},
+  {name:'Isparta',   coords:[37.7648,30.5566],emoji:'🌹',desc:'Gül bahçelerinin şehri, lavanta ve doğa',color:'#c97fb5',
+   img:'https://images.unsplash.com/photo-1490750967868-88df5691cc7e?w=120&h=120&fit=crop&crop=center'},
+  {name:'Kırıkkale', coords:[39.8468,33.5153],emoji:'⚙️',desc:'Sanayi ve tarihin iç içe geçtiği şehir',color:'#a8a8d5',
+   img:'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=120&h=120&fit=crop&crop=center'},
+  {name:'Samsun',    coords:[41.2867,36.3300],emoji:'🌊',desc:"Karadeniz'in parlayan yıldızı",color:'#4a9fd5',
+   img:'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=120&h=120&fit=crop&crop=center'},
+  {name:'Trabzon',   coords:[41.0015,39.7178],emoji:'🏔️',desc:"Karadeniz'in prensesi, Sümela Manastırı",color:'#7ecb8c',
+   img:'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=120&h=120&fit=crop&crop=center'},
+  {name:'Rize',      coords:[41.0201,40.5234],emoji:'🍵',desc:'Çayın başkenti, yemyeşil yayla ve deniz',color:'#7ecb8c',
+   img:'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=120&h=120&fit=crop&crop=center'},
+];
+
+/* Inject CSS animations for map markers */
+const ms=document.createElement('style');
+ms.textContent=`
+  @keyframes markerBounce{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-6px) scale(1.08)}}
+  @keyframes ripple{0%{transform:scale(1);opacity:.6}100%{transform:scale(2.5);opacity:0}}
+  .travel-marker{animation:markerBounce 3s ease-in-out infinite}
+  .net-marker{animation:markerBounce 2.5s ease-in-out infinite}
+`;
+document.head.appendChild(ms);
+
+function makeTravelIcon(emoji,color,delay,img){
+  return L.divIcon({
+    html:`<div class="travel-marker" style="width:54px;height:54px;border-radius:50%;border:3px solid ${color};box-shadow:0 4px 20px ${color}90,0 0 0 5px ${color}22;animation-delay:${delay}s;cursor:pointer;position:relative;overflow:visible">
+      <!-- ripple ring -->
+      <div style="position:absolute;inset:-6px;border-radius:50%;border:1.5px solid ${color};opacity:.5;animation:ripple 2s ease-out ${delay}s infinite;pointer-events:none"></div>
+      <!-- photo circle -->
+      <div style="width:100%;height:100%;border-radius:50%;overflow:hidden;background:linear-gradient(135deg,#0d2144,#1a3a6b)">
+        <img src="${img}" alt="${emoji}"
+          style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block"
+          onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\"width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:22px;border-radius:50%;background:linear-gradient(135deg,#0d2144,#1a3a6b)\">${emoji}</div>'"
+        >
+      </div>
+    </div>`,
+    className:'',iconSize:[54,54],iconAnchor:[27,27],popupAnchor:[0,-32]
+  });
+}
+
+cities.forEach((city,i)=>{
+  const m=L.marker(city.coords,{icon:makeTravelIcon(city.emoji,city.color,i*0.4,city.img)}).addTo(travelMap);
+  m.bindPopup(`
+    <div style="width:210px">
+      <img src="${city.img.replace('w=120&h=120','w=240&h=130')}" alt="${city.name}"
+        style="width:100%;height:110px;object-fit:cover;border-radius:3px;margin-bottom:8px;display:block"
+        onerror="this.style.display='none'">
+      <div class="popup-title">${city.emoji} ${city.name}</div>
+      <div class="popup-desc" style="margin-top:4px">${city.desc}</div>
+    </div>
+  `, {maxWidth:230});
+  L.circle(city.coords,{color:city.color,fillColor:city.color,fillOpacity:.06,weight:1,radius:28000}).addTo(travelMap);
+});
+
+/* ── NETWORK MAP ── */
+const networkMap=L.map('network-map',{center:[39.95,32.82],zoom:11,scrollWheelZoom:false});
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© <a href="https://www.openstreetmap.org/copyright" style="color:#4a9fd5">OpenStreetMap</a>',maxZoom:19}).addTo(networkMap);
+
+const netPoints=[
+  {layer:'ev',name:'Ev — 19 Mayıs, Keçiören',coords:[40.0077,32.8633],color:'#c9a96e',emoji:'🏠',desc:'Keçiören, 19 Mayıs Mahallesi · Ankara'},
+  {layer:'is',name:'Çevre, Şehircilik ve İklim Değişikliği Bakanlığı',coords:[39.9376,32.8497],color:'#4a9fd5',emoji:'🏛️',desc:'Mustafa Kemal Mah. · Çankaya, Ankara'},
+  {layer:'egitim',name:'Hacettepe Üniversitesi',coords:[39.8672,32.7338],color:'#7ecb8c',emoji:'🎓',desc:'Beytepe Kampüsü · Hacettepe Üniversitesi'},
+];
+
+function makeNetIcon(color,emoji,delay){
+  return L.divIcon({
+    html:`<div class="net-marker" style="width:44px;height:44px;background:${color};border:3px solid rgba(255,255,255,.3);border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 4px 18px ${color}80;display:flex;align-items:center;justify-content:center;cursor:pointer;animation-delay:${delay}s;position:relative">
+      <div style="position:absolute;inset:-5px;border-radius:50% 50% 50% 0;border:1.5px solid ${color};opacity:.4;animation:ripple 2.2s ease-out ${delay}s infinite"></div>
+      <span style="transform:rotate(45deg);font-size:17px">${emoji}</span>
+    </div>`,
+    className:'',iconSize:[44,44],iconAnchor:[22,44],popupAnchor:[0,-48]
+  });
+}
+
+const layers={};
+netPoints.forEach((pt,i)=>{
+  const m=L.marker(pt.coords,{icon:makeNetIcon(pt.color,pt.emoji,i*0.5)}).addTo(networkMap);
+  const label=pt.layer==='ev'?'Ev':pt.layer==='is'?'İş':'Eğitim';
+  m.bindPopup(`<div class="popup-title">${pt.emoji} ${pt.name}</div><span class="popup-tag">${label}</span><div class="popup-desc">${pt.desc}</div>`);
+  const c=L.circle(pt.coords,{color:pt.color,fillColor:pt.color,fillOpacity:.1,weight:1.5,radius:450}).addTo(networkMap);
+  layers[pt.layer]={m,c};
+});
+
+/* Lines between network points */
+const line=L.polyline(netPoints.map(p=>p.coords),{color:'#4a9fd5',weight:2.5,dashArray:'10 6',opacity:.75,lineJoin:'round'}).addTo(networkMap);
+const lineGlow=L.polyline(netPoints.map(p=>p.coords),{color:'rgba(74,159,213,.18)',weight:8,opacity:1,lineJoin:'round'}).addTo(networkMap);
+
+function filterLayer(type,btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  Object.entries(layers).forEach(([k,{m,c}])=>{
+    if(type==='all'||type===k){networkMap.addLayer(m);networkMap.addLayer(c);}
+    else{networkMap.removeLayer(m);networkMap.removeLayer(c);}
+  });
+  if(type==='all'){networkMap.addLayer(line);networkMap.addLayer(lineGlow);}
+  else{networkMap.removeLayer(line);networkMap.removeLayer(lineGlow);}
+}
+
+networkMap.on('click',e=>{
+  document.getElementById('coord-display').textContent=`📍 Koordinat: ${e.latlng.lat.toFixed(5)}° K, ${e.latlng.lng.toFixed(5)}° D`;
+});
+</script>
+</body>
+</html>

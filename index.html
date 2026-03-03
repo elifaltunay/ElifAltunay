@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Elif Altunay | Kişisel Web Sayfası</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #0a1628;
+      --deep: #0d2144;
+      --mid: #1a3a6b;
+      --bright: #2563b0;
+      --sky: #4a9fd5;
+      --ice: #a8d4f0;
+      --frost: #dceefa;
+      --white: #f4f9ff;
+      --gold: #c9a96e;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── animated background ── */
+    body::before {
+      content: '';
+      position: fixed;c:\Users\elif.altunay\Downloads\files (2)\hakkimda.html c:\Users\elif.altunay\Downloads\files (2)\hobilerim.html c:\Users\elif.altunay\Downloads\files (2)\iletisim.html c:\Users\elif.altunay\Downloads\files (2)\index.html
+      inset: 0;
+      background:
+        radial-gradien(ellipse 80% 60% at 20% 10%, rgba(37,99,176,0.35) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 80% 90%, rgba(74,159,213,0.2) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 40% at 60% 40%, rgba(13,33,68,0.8) 0%, transparent 70%);
+      z-index: 0;
+      animation: bgPulse 12s ease-in-out infinite alternate;
+    }
+    @keyframes bgPulse {
+      0%   { opacity: 1; }
+      100% { opacity: 0.7; }
+    }
+
+    /* ── floating particles ── */
+    .particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .particle {
+      position: absolute;
+      width: 2px; height: 2px;
+      background: var(--sky);
+      border-radius: 50%;
+      animation: float linear infinite;
+      opacity: 0;
+    }
+    @keyframes float {
+      0%   { transform: translateY(100vh) translateX(0); opacity: 0; }
+      10%  { opacity: 0.6; }
+      90%  { opacity: 0.3; }
+      100% { transform: translateY(-10vh) translateX(60px); opacity: 0; }
+    }
+
+    /* ── nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 4rem;
+      backdrop-filter: blur(18px);
+      background: rgba(10,22,40,0.75);
+      border-bottom: 1px solid rgba(74,159,213,0.18);
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.45rem;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      color: var(--ice);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--gold); font-style: italic; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none;
+      color: rgba(168,212,240,0.75);
+      font-size: 0.82rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      transition: color 0.3s, opacity 0.3s;
+      font-weight: 500;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--sky); }
+
+    /* ── hero ── */
+    .hero {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+    }
+    .hero-eyebrow {
+      font-size: 0.78rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--sky);
+      margin-bottom: 1.4rem;
+      animation: fadeUp 1s ease 0.2s both;
+    }
+    .hero-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.2rem, 8vw, 6.5rem);
+      font-weight: 300;
+      line-height: 1.05;
+      color: var(--white);
+      margin-bottom: 0.6rem;
+      animation: fadeUp 1s ease 0.4s both;
+    }
+    .hero-name em {
+      font-style: italic;
+      color: var(--gold);
+    }
+    .hero-title {
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: var(--ice);
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+      animation: fadeUp 1s ease 0.6s both;
+    }
+    .hero-org {
+      font-size: 0.85rem;
+      color: rgba(168,212,240,0.6);
+      letter-spacing: 0.1em;
+      animation: fadeUp 1s ease 0.7s both;
+    }
+
+    .hero-divider {
+      width: 60px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 2rem auto;
+      animation: fadeUp 1s ease 0.8s both;
+    }
+
+    .hero-cta {
+      display: flex; gap: 1.2rem; flex-wrap: wrap; justify-content: center;
+      animation: fadeUp 1s ease 1s both;
+    }
+    .btn {
+      text-decoration: none;
+      padding: 0.75rem 2.2rem;
+      border-radius: 3px;
+      font-size: 0.82rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+    .btn-primary {
+      background: var(--bright);
+      color: var(--white);
+      border: 1px solid var(--bright);
+    }
+    .btn-primary:hover { background: var(--sky); border-color: var(--sky); transform: translateY(-2px); }
+    .btn-outline {
+      background: transparent;
+      color: var(--ice);
+      border: 1px solid rgba(74,159,213,0.4);
+    }
+    .btn-outline:hover { border-color: var(--sky); color: var(--sky); transform: translateY(-2px); }
+
+    /* ── scroll indicator ── */
+    .scroll-hint {
+      position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+      animation: fadeUp 1s ease 1.4s both;
+    }
+    .scroll-hint span {
+      font-size: 0.7rem; letter-spacing: 0.2em; color: rgba(168,212,240,0.5); text-transform: uppercase;
+    }
+    .scroll-line {
+      width: 1px; height: 40px;
+      background: linear-gradient(180deg, var(--sky), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.2); }
+    }
+
+    /* ── quick info cards ── */
+    .quick-info {
+      position: relative; z-index: 1;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: rgba(74,159,213,0.15);
+      border-top: 1px solid rgba(74,159,213,0.15);
+      border-bottom: 1px solid rgba(74,159,213,0.15);
+      margin-bottom: 5rem;
+    }
+    .info-card {
+      background: rgba(10,22,40,0.8);
+      padding: 2.5rem;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      transition: background 0.3s;
+    }
+    .info-card:hover { background: rgba(26,58,107,0.5); }
+    .info-card-icon { font-size: 1.8rem; margin-bottom: 0.8rem; }
+    .info-card-label {
+      font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--sky); margin-bottom: 0.4rem;
+    }
+    .info-card-value { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; color: var(--white); }
+
+    /* ── section ── */
+    section {
+      position: relative; z-index: 1;
+      max-width: 900px; margin: 0 auto 6rem;
+      padding: 0 2rem;
+    }
+    .section-tag {
+      font-size: 0.72rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--sky); margin-bottom: 0.8rem;
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 300; color: var(--white);
+      margin-bottom: 2rem;
+    }
+    .section-title em { font-style: italic; color: var(--gold); }
+
+    /* ── about ── */
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+    .about-text p {
+      color: rgba(168,212,240,0.8); font-size: 1rem; line-height: 1.85;
+      margin-bottom: 1.2rem; font-weight: 300;
+    }
+    .about-stats { display: flex; flex-direction: column; gap: 1rem; }
+    .stat-item {
+      border-left: 2px solid var(--bright);
+      padding: 0.8rem 1.4rem;
+      background: rgba(37,99,176,0.1);
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .stat-item:hover { background: rgba(37,99,176,0.2); border-color: var(--sky); }
+    .stat-label { font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--sky); }
+    .stat-value { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--white); margin-top: 0.2rem; }
+
+    /* ── footer ── */
+    footer {
+      position: relative; z-index: 1;
+      border-top: 1px solid rgba(74,159,213,0.15);
+      padding: 2rem 4rem;
+      display: flex; justify-content: space-between; align-items: center;
+      color: rgba(168,212,240,0.4); font-size: 0.78rem;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { gap: 1.2rem; }
+      .quick-info { grid-template-columns: 1fr; }
+      .about-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Particles -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Nav -->
+  <nav>
+    <a class="nav-logo" href="index.html">Elif <span>Altunay</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Ana Sayfa</a></li>
+      <li><a href="hakkimda.html">Hakkımda</a></li>
+      <li><a href="hobilerim.html">Hobilerim</a></li>
+      <li><a href="iletisim.html">İletişim</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <p class="hero-eyebrow">Kişisel Web Sayfası</p>
+    <h1 class="hero-name"><em>Elif</em><br>Altunay</h1>
+    <p class="hero-title">Bilgisayar Mühendisi</p>
+    <p class="hero-org">Çevre, Şehircilik ve İklim Değişikliği Bakanlığı</p>
+    <div class="hero-divider"></div>
+    <div class="hero-cta">
+      <a href="hakkimda.html" class="btn btn-primary">Hakkımda</a>
+      <a href="iletisim.html" class="btn btn-outline">İletişim</a>
+    </div>
+    <div class="scroll-hint">
+      <span>Keşfet</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- Quick Info -->
+  <div class="quick-info">
+    <div class="info-card">
+      <div class="info-card-icon">💻</div>
+      <div class="info-card-label">Meslek</div>
+      <div class="info-card-value">Bilgisayar Mühendisi</div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-icon">🏛️</div>
+      <div class="info-card-label">Kurum</div>
+      <div class="info-card-value">ÇŞİDB</div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-icon">📍</div>
+      <div class="info-card-label">Konum</div>
+      <div class="info-card-value">Çankaya, Ankara</div>
+    </div>
+  </div>
+
+  <!-- About Preview -->
+  <section>
+    <p class="section-tag">01 — Tanıtım</p>
+    <h2 class="section-title">Merhaba, ben <em>Elif</em></h2>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>
+          Bilgisayar mühendisi olarak Çevre, Şehircilik ve İklim Değişikliği Bakanlığı'nda
+          çalışmaktayım. Proje yöneticisi ve İş analisti olarak görev almaktayım.
+        </p>
+        <p>
+          Ankara Keçiören'de yaşıyor, boş zamanlarımda tenis oynamayı, sinema ve tiyatroya
+          gitmeyi seviyorum.
+        </p>
+        <a href="hakkimda.html" class="btn btn-outline" style="display:inline-block;margin-top:0.5rem">Daha Fazla →</a>
+      </div>
+      <div class="about-stats">
+        <div class="stat-item">
+          <div class="stat-label">Uzmanlık</div>
+          <div class="stat-value">Yazılım Geliştirme</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Sektör</div>
+          <div class="stat-value">Kamu / IT Teknolojileri</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Şehir</div>
+          <div class="stat-value">Ankara, Türkiye</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">İletişim</div>
+          <div class="stat-value"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" ></a>elif.altunay@csb.gov.tr</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2026 Elif Altunay</span>
+    <span>Çankaya · Ankara · Türkiye</span>
+  </footer>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    // Generate floating particles
+    const container = document.getElementById('particles');
+    for (let i = 0; i < 35; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + 'vw';
+      p.style.width = p.style.height = (Math.random() * 3 + 1) + 'px';
+    }

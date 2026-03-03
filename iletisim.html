@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>İletişim | Elif Altunay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    :root {
+      --navy:#0a1628; --deep:#0d2144; --mid:#1a3a6b; --bright:#2563b0;
+      --sky:#4a9fd5; --ice:#a8d4f0; --white:#f4f9ff; --gold:#c9a96e;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+
+    body {
+      background:var(--navy); color:var(--white);
+      font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden;
+    }
+
+    /* animated background */
+    body::before {
+      content:''; position:fixed; inset:0; z-index:0;
+      background:
+        radial-gradient(ellipse 70% 50% at 15% 25%, rgba(37,99,176,.28) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 60% at 85% 80%, rgba(74,159,213,.15) 0%, transparent 55%);
+      animation:bgPulse 14s ease-in-out infinite alternate;
+    }
+    @keyframes bgPulse { 0%{opacity:1;transform:scale(1)} 100%{opacity:.75;transform:scale(1.04)} }
+
+    /* floating particles */
+    .particles { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+    .particle { position:absolute; border-radius:50%; animation:floatUp linear infinite; opacity:0; }
+    @keyframes floatUp {
+      0%   { transform:translateY(100vh) translateX(0); opacity:0; }
+      10%  { opacity:.5; }
+      90%  { opacity:.2; }
+      100% { transform:translateY(-10vh) translateX(40px); opacity:0; }
+    }
+
+    /* nav */
+    nav {
+      position:fixed; top:0; left:0; right:0; z-index:200;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:1.2rem 4rem;
+      backdrop-filter:blur(18px);
+      background:rgba(10,22,40,.82);
+      border-bottom:1px solid rgba(74,159,213,.18);
+    }
+    .nav-logo { font-family:'Cormorant Garamond',serif; font-size:1.45rem; font-weight:300; letter-spacing:.12em; color:var(--ice); text-decoration:none; }
+    .nav-logo span { color:var(--gold); font-style:italic; }
+    .nav-links { display:flex; gap:2.5rem; list-style:none; }
+    .nav-links a { text-decoration:none; color:rgba(168,212,240,.75); font-size:.82rem; letter-spacing:.14em; text-transform:uppercase; transition:color .3s; font-weight:500; }
+    .nav-links a:hover, .nav-links a.active { color:var(--sky); }
+
+    /* page header */
+    .page-header {
+      position:relative; z-index:1;
+      padding:10rem 4rem 3rem; max-width:1000px; margin:0 auto;
+    }
+    .page-tag  { font-size:.72rem; letter-spacing:.3em; text-transform:uppercase; color:var(--sky); margin-bottom:.8rem; animation:fadeUp .8s ease both; }
+    .page-title { font-family:'Cormorant Garamond',serif; font-size:clamp(2.5rem,5vw,4.5rem); font-weight:300; color:var(--white); animation:fadeUp .8s ease .2s both; }
+    .page-title em { font-style:italic; color:var(--gold); }
+    .page-divider { width:80px; height:1px; background:linear-gradient(90deg,var(--gold),transparent); margin:2rem 0; animation:fadeUp .8s ease .3s both; }
+
+    /* layout */
+    .contact-wrap {
+      position:relative; z-index:1;
+      max-width:1000px; margin:0 auto;
+      padding:0 4rem 5rem;
+      display:grid; grid-template-columns:1fr 1.6fr; gap:3rem;
+    }
+
+    /* contact cards */
+    .contact-cards { display:flex; flex-direction:column; gap:1rem; }
+
+    .contact-card {
+      display:flex; align-items:flex-start; gap:1rem;
+      padding:1.5rem;
+      background:rgba(13,33,68,.55);
+      border:1px solid rgba(74,159,213,.15);
+      border-radius:4px;
+      text-decoration:none; color:inherit;
+      position:relative; overflow:hidden;
+      opacity:0; transform:translateX(-20px);
+      transition:background .3s, border-color .3s, transform .35s, opacity .35s, box-shadow .3s;
+    }
+    .contact-card.visible { opacity:1; transform:translateX(0); }
+
+    /* shimmer */
+    .contact-card::before {
+      content:''; position:absolute; top:0; left:-100%;
+      width:60%; height:100%;
+      background:linear-gradient(90deg,transparent,rgba(74,159,213,.07),transparent);
+      transform:skewX(-15deg); transition:left .5s ease;
+    }
+    .contact-card:hover::before { left:150%; }
+    /* bottom reveal line */
+    .contact-card::after {
+      content:''; position:absolute; bottom:0; left:0;
+      width:0; height:2px;
+      background:linear-gradient(90deg,var(--bright),var(--sky));
+      transition:width .4s ease;
+    }
+    .contact-card:hover::after { width:100%; }
+    .contact-card:hover { background:rgba(26,58,107,.4); border-color:rgba(74,159,213,.45); transform:translateX(5px)!important; box-shadow:0 4px 24px rgba(74,159,213,.1); }
+
+    .card-icon {
+      width:42px; height:42px; flex-shrink:0;
+      background:rgba(37,99,176,.2); border:1px solid rgba(74,159,213,.25);
+      border-radius:3px; display:flex; align-items:center; justify-content:center;
+      font-size:1.1rem; transition:background .3s, box-shadow .3s, transform .3s;
+    }
+    .contact-card:hover .card-icon { background:rgba(37,99,176,.4); box-shadow:0 0 14px rgba(74,159,213,.4); transform:rotate(10deg) scale(1.12); }
+    .card-label { font-size:.7rem; letter-spacing:.2em; text-transform:uppercase; color:var(--sky); margin-bottom:.3rem; }
+    .card-value { font-family:'Cormorant Garamond',serif; font-size:1.05rem; color:var(--white); }
+    .card-sub   { font-size:.78rem; color:rgba(168,212,240,.55); margin-top:.2rem; }
+    .section-divider { height:1px; background:rgba(74,159,213,.12); margin:.3rem 0; }
+
+    /* stagger delays */
+    .contact-card:nth-child(1) { transition-delay:.1s; }
+    .contact-card:nth-child(2) { transition-delay:.2s; }
+    .contact-card:nth-child(4) { transition-delay:.3s; }
+    .contact-card:nth-child(5) { transition-delay:.4s; }
+    .contact-card:nth-child(6) { transition-delay:.5s; }
+
+    /* map section */
+    .map-section {
+      position:relative; z-index:1;
+      animation:fadeUp .9s ease .5s both;
+    }
+    .map-label { font-size:.7rem; letter-spacing:.25em; text-transform:uppercase; color:var(--sky); margin-bottom:.6rem; }
+    .map-title { font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:300; color:var(--white); margin-bottom:1.2rem; }
+    .map-title em { font-style:italic; color:var(--gold); }
+
+    #map {
+      width:100%; height:400px;
+      border-radius:4px;
+      border:1px solid rgba(74,159,213,.25);
+      overflow:hidden;
+      animation:mapGlow 4s ease-in-out infinite alternate;
+    }
+    @keyframes mapGlow {
+      0%   { box-shadow:0 20px 60px rgba(0,0,0,.5), 0 0 0 rgba(74,159,213,0); }
+      100% { box-shadow:0 20px 60px rgba(0,0,0,.5), 0 0 24px rgba(74,159,213,.2); }
+    }
+
+    .map-legend { display:flex; gap:1.2rem; margin-top:.9rem; flex-wrap:wrap; }
+    .legend-item { display:flex; align-items:center; gap:.5rem; font-size:.75rem; color:rgba(168,212,240,.6); }
+    .legend-dot  { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+    .map-note    { margin-top:.5rem; font-size:.72rem; color:rgba(168,212,240,.35); }
+
+    /* leaflet popup */
+    .leaflet-popup-content-wrapper {
+      background:rgba(10,22,40,.97)!important;
+      border:1px solid rgba(74,159,213,.4)!important;
+      border-radius:4px!important;
+      color:var(--white)!important;
+      box-shadow:0 10px 30px rgba(0,0,0,.6)!important;
+    }
+    .leaflet-popup-tip { background:rgba(10,22,40,.97)!important; }
+    .leaflet-popup-content { font-family:'DM Sans',sans-serif!important; font-size:.85rem!important; line-height:1.6; margin:10px 14px!important; }
+    .leaflet-popup-close-button { color:var(--sky)!important; }
+    .popup-title { font-family:'Cormorant Garamond',serif; font-size:1.1rem; color:var(--ice); margin-bottom:4px; }
+    .popup-tag   { display:inline-block; font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; color:var(--sky); background:rgba(74,159,213,.12); border:1px solid rgba(74,159,213,.3); border-radius:2px; padding:.15rem .5rem; margin-bottom:5px; }
+    .popup-desc  { color:rgba(168,212,240,.75); font-size:.8rem; }
+
+    footer {
+      position:relative; z-index:1;
+      border-top:1px solid rgba(74,159,213,.15);
+      padding:2rem 4rem;
+      display:flex; justify-content:space-between; align-items:center;
+      color:rgba(168,212,240,.4); font-size:.78rem;
+    }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+    @media(max-width:768px){
+      nav { padding:1rem 1.5rem; }
+      .nav-links { gap:1rem; }
+      .page-header, .contact-wrap { padding-left:1.5rem; padding-right:1.5rem; }
+      .contact-wrap { grid-template-columns:1fr; }
+      footer { flex-direction:column; gap:.5rem; text-align:center; padding:1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="particles" id="particles"></div>
+
+  <nav>
+    <a class="nav-logo" href="index.html">Elif <span>Altunay</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Ana Sayfa</a></li>
+      <li><a href="hakkimda.html">Hakkımda</a></li>
+      <li><a href="hobilerim.html">Hobilerim</a></li>
+      <li><a href="iletisim.html" class="active">İletişim</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-header">
+    <p class="page-tag">04 — İletişim</p>
+    <h1 class="page-title">Bana <em>Ulaşın</em></h1>
+    <div class="page-divider"></div>
+  </div>
+
+  <div class="contact-wrap">
+
+    <!-- ── Contact Cards ── -->
+    <div class="contact-cards">
+
+      <a class="contact-card" href="mailto:elif.altunay@csb.gov.tr">
+        <div class="card-icon">✉️</div>
+        <div class="card-body">
+          <div class="card-label">E-posta</div>
+          <div class="card-value">elif.altunay@csb.gov.tr</div>
+          <div class="card-sub">İş ve genel yazışmalar</div>
+        </div>
+      </a>
+
+      <a class="contact-card" href="tel:+903124101000">
+        <div class="card-icon">📞</div>
+        <div class="card-body">
+          <div class="card-label">Telefon</div>
+          <div class="card-value">0312 410 10 00</div>
+          <div class="card-sub">Hafta içi 09:00 – 17:30</div>
+        </div>
+      </a>
+
+      <div class="section-divider"></div>
+
+      <div class="contact-card" style="cursor:default">
+        <div class="card-icon">🏛️</div>
+        <div class="card-body">
+          <div class="card-label">Kurum</div>
+          <div class="card-value">ÇŞİDB</div>
+          <div class="card-sub">Çevre, Şehircilik ve İklim Değişikliği Bakanlığı</div>
+        </div>
+      </div>
+
+      <div class="contact-card" style="cursor:default">
+        <div class="card-icon">📍</div>
+        <div class="card-body">
+          <div class="card-label">Bakanlık Adresi</div>
+          <div class="card-value">Mustafa Kemal Mah.</div>
+          <div class="card-sub">Dumlupınar Bulvarı No:278, Çankaya · Ankara</div>
+        </div>
+      </div>
+
+      <div class="contact-card" style="cursor:default">
+        <div class="card-icon">💼</div>
+        <div class="card-body">
+          <div class="card-label">Ünvan</div>
+          <div class="card-value">Bilgisayar Mühendisi</div>
+          <div class="card-sub">Yazılım Geliştirme Birimi</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Map ── -->
+    <div class="map-section">
+      <div class="map-label">Harita</div>
+      <div class="map-title">Bakanlık <em>Konumu</em></div>
+      <div id="map"></div>
+      <div class="map-legend">
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#4a9fd5"></div>
+          Çevre, Şehircilik ve İklim Değişikliği Bakanlığı
+        </div>
+      </div>
+      <p class="map-note">📌 Mustafa Kemal Mah., Dumlupınar Bulvarı · Leaflet &amp; OpenStreetMap</p>
+    </div>
+
+  </div>
+
+  <footer>
+    <span>© 2026 Elif Altunay</span>
+    <span>Çankaya · Ankara · Türkiye</span>
+  </footer>
+
+  <!-- Leaflet JS — loaded FIRST, then our script -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    /* ── particles ── */
+    const pc = document.getElementById('particles');
+    for (let i = 0; i < 25; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const s = Math.random() * 3 + 1;
+      p.style.cssText = `left:${Math.random()*100}vw;width:${s}px;height:${s}px;` +
+        `animation-duration:${Math.random()*18+12}s;animation-delay:${Math.random()*18}s;` +
+        `background:${Math.random()>.7 ? 'rgba(201,169,110,.5)' : 'rgba(74,159,213,.5)'}`;
+      pc.appendChild(p);
+    }
+
+    /* ── scroll-reveal for contact cards ── */
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 110);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.contact-card').forEach(el => observer.observe(el));
+
+    /* ── Leaflet map — Çevre Bakanlığı konumu ── */
+    // Mustafa Kemal Mah., Dumlupınar Bulvarı No:278, Çankaya, Ankara
+    const LAT = 39.9119;
+    const LNG = 32.8033;
+
+    const map = L.map('map', {
+      center: [LAT, LNG],
+      zoom: 15,
+      scrollWheelZoom: false,
+      zoomControl: true
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© <a href="https://www.openstreetmap.org/copyright" style="color:#4a9fd5">OpenStreetMap</a> katkıcıları',
+      maxZoom: 19
+    }).addTo(map);
+
+    /* custom animated marker */
+    const ministryIcon = L.divIcon({
+      html: `
+        <div id="min-marker" style="
+          width:48px; height:48px;
+          background:linear-gradient(135deg,#1a3a6b,#2563b0);
+          border:2.5px solid rgba(74,159,213,.8);
+          border-radius:50% 50% 50% 0;
+          transform:rotate(-45deg);
+          box-shadow:0 6px 24px rgba(74,159,213,.6);
+          display:flex; align-items:center; justify-content:center;
+          position:relative;
+        ">
+          <div style="
+            position:absolute; inset:-6px; border-radius:50% 50% 50% 0;
+            border:1.5px solid rgba(74,159,213,.4);
+            animation:ripple 2s ease-out infinite;
+          "></div>
+          <span style="transform:rotate(45deg); font-size:20px;">🏛️</span>
+        </div>
+      `,
+      className: '',
+      iconSize: [48, 48],
+      iconAnchor: [24, 48],
+      popupAnchor: [0, -52]
+    });
+
+    /* inject CSS animation for marker */
+    const st = document.createElement('style');
+    st.textContent = `
+      @keyframes ripple {
+        0%   { transform:scale(1); opacity:.7; }
+        100% { transform:scale(2.2); opacity:0; }
+      }
+      @keyframes markerBounce {
+        0%,100% { margin-top:0; }
+        50%      { margin-top:-6px; }
+      }
+      #min-marker { animation:markerBounce 2.5s ease-in-out infinite; }
+    `;
+    document.head.appendChild(st);
+
+    const marker = L.marker([LAT, LNG], { icon: ministryIcon }).addTo(map);
+
+    marker.bindPopup(`
+      <div class="popup-title">🏛️ Çevre Bakanlığı</div>
+      <span class="popup-tag">Kurum Konumu</span>
+      <div class="popup-desc">
+        Mustafa Kemal Mah., Dumlupınar Bulvarı No:278<br>
+        Çankaya · Ankara · Türkiye<br><br>
+        <strong style="color:#a8d4f0">Elif Altunay</strong> — Bilgisayar Mühendisi
+      </div>
+    `).openPopup();
+
+    /* pulsing radius circle */
+    L.circle([LAT, LNG], {
+      color: '#4a9fd5',
+      fillColor: '#2563b0',
+      fillOpacity: 0.07,
+      weight: 1.5,
+      radius: 180
+    }).addTo(map);
+  </script>
+</body>
+</html>
